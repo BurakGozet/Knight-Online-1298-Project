@@ -48,26 +48,12 @@ bool LoginServer::Startup()
 	printf("Latest version in database: %d\n", GetVersion());
 	InitPacketHandlers();
 
-#if (__VERSION > 1886)
-	for(int i=0; i<10 ; i++)
-		if (!m_socketMgr[i].Listen(m_LoginServerPort+i, MAX_USER))
-		{
-			printf("ERROR: Failed to listen on server port.\n");
-			return false;
-		}
-#else
 	if (!m_socketMgr.Listen(m_LoginServerPort, MAX_USER))
 	{
 		printf("ERROR: Failed to listen on server port.\n");
 		return false;
 	}
-#endif
-#if(__VERSION > 1886)
-	for(int i=0; i<10 ; i++)
-		m_socketMgr[i].RunServer();
-#else
 	m_socketMgr.RunServer();
-#endif
 	g_timerThreads.push_back(new Thread(Timer_UpdateUserCount));
 	return true;
 }
